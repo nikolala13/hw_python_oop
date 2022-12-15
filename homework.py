@@ -13,7 +13,7 @@ class InfoMessage:
     message = (
         'Тип тренировки: {training_type}; '
         'Длительность: {duration:.3f} ч.; '
-        'Дистанция: {distance:.3f} км.; '
+        'Дистанция: {distance:.3f} км; '
         'Ср. скорость: {speed:.3f} км/ч; '
         'Потрачено ккал: {calories:.3f}.')
 
@@ -25,7 +25,7 @@ class Training:
     """Базовый класс тренировки."""
     LEN_STEP = 0.65
     M_IN_KM = 1000
-    MIN_IN_HOUR = 60
+    MIN_IN_H = 60
 
     def __init__(self,
                  action: int,
@@ -73,16 +73,16 @@ class Running(Training):
                               * self.get_mean_speed()
                               + self.CALORIES_MEAN_SPEED_SHIFT_RUNNING)
                               * self.weight / self.M_IN_KM
-                              * (self.duration * self.MIN_IN_HOUR))
+                              * (self.duration * self.MIN_IN_H))
         return count_run_calories
 
 
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
 
-    CALORIES_MEAN_SPEED_MULTIPLIER_WALKING = 0.035
-    CALORIES_MEAN_SPEED_SHIFT_WALKING = 0.029
-    KMH_IN_MS = 1000 / 3600
+    CALORIES_WEIGHT_MULTIPLIER = 0.035
+    CALORIES_SPEED_HEIGHT_MULTIPLIER = 0.029
+    KMH_IN_MSEC = 0.278
     CM_IN_M = 100
 
     def __init__(self,
@@ -95,14 +95,16 @@ class SportsWalking(Training):
 
     def get_spent_calories(self) -> float:
         """Получаем кол-во израсходованных каллорий за тренировку."""
-        count_walk_calories = ((self.CALORIES_MEAN_SPEED_SHIFT_WALKING
+        count_walk_calories = ((self.CALORIES_WEIGHT_MULTIPLIER
                                * self.weight
-                               + ((self.get_mean_speed() * self.KMH_IN_MS)
+                               + ((self.get_mean_speed()
+                                * self.KMH_IN_MSEC)
                                 ** 2
-                                / (self.height / self.CM_IN_M)
-                                * self.CALORIES_MEAN_SPEED_SHIFT_WALKING
-                                * self.weight))
-                               * (self.duration * self.MIN_IN_HOUR))
+                                / (self.height / self.CM_IN_M))
+                               * self.CALORIES_SPEED_HEIGHT_MULTIPLIER
+                               * self.weight)
+                               * self.duration
+                               * self.MIN_IN_H)
         return count_walk_calories
 
 
