@@ -1,4 +1,3 @@
-from msilib import type_string
 import typing
 from dataclasses import dataclass, asdict
 
