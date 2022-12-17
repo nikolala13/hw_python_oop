@@ -80,7 +80,10 @@ class SportsWalking(Training):
     CALORIES_WEIGHT_MULTIPLIER = 0.035
     CALORIES_SPEED_HEIGHT_MULTIPLIER = 0.029
     CM_IN_M = 100
-    KMH_IN_MSEC = round(1000 / 3600, 3)
+    SEC_IN_MIN = 60
+    MIN_IN_H = 60
+    M_IN_KM = 1000
+    KMH_IN_MSEC = round(M_IN_KM / MIN_IN_H / SEC_IN_MIN, 3)
 
     def __init__(self,
                  action: int,
@@ -140,15 +143,17 @@ class Swimming(Training):
                 * self.duration)
 
 
+SELECT_WORKOUT_TYPE = {
+    'SWM': Swimming,
+    'RUN': Running,
+    'WLK': SportsWalking
+}
+
+
 def read_package(workout_type: str, data: typing.List[int]):
     """Определяем вид тренировки по данным, полученным от "трекера"."""
-    select_workout_type: typing.Dict[str, workout_type(Training)] = {
-        'SWM': Swimming,
-        'RUN': Running,
-        'WLK': SportsWalking
-    }
     try:
-        return select_workout_type[workout_type](*data)
+        return SELECT_WORKOUT_TYPE[workout_type](*data)
     except KeyError as K:
         print(f'Неизвестный вид тренировки {K}')
 
