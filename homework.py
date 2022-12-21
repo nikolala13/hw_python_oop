@@ -58,6 +58,7 @@ class Training:
         )
 
 
+@dataclass
 class Running(Training):
     """Тренировка: бег."""
 
@@ -89,9 +90,7 @@ class SportsWalking(Training):
     CALORIES_SPEED_HEIGHT_MULTIPLIER = 0.029
     CM_IN_M = 100
     SEC_IN_MIN = 60
-    MIN_IN_H = 60
-    M_IN_KM = 1000
-    KMH_IN_MSEC = round(M_IN_KM / MIN_IN_H / SEC_IN_MIN, 3)
+    KMH_IN_MSEC = round(Training.M_IN_KM / Training.MIN_IN_H / SEC_IN_MIN, 3)
 
     def get_spent_calories(self) -> float:
         """Получаем кол-во израсходованных каллорий за тренировку."""
